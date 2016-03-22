@@ -33,6 +33,14 @@ li {
     color: red;
 }
 
+li.checked {
+    color: #ccc;
+}
+
+li.checked .text {
+    text-decoration: line-through;
+}
+
 /* Custom page header */
 .header {
   padding-bottom: 20px;
