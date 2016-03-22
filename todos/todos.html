@@ -29,5 +29,9 @@
 
 
 <template name="main">
-    this is the main template
+    <ul>
+        {{#each todos}}
+        <li>{{text}}</li>
+        {{/each}}
+    </ul>
 </template>
