@@ -1,58 +1,77 @@
 Todos = new Mongo.Collection('todos');
 
 if (Meteor.isClient) {
-    //Template helpers
-    Template.main.helpers({
-        todos: function(){
-            return Todos.find({}, {sort: {createdAt: -1}});
-        }
-    });
+  Meteor.subscribe('todos');
 
-    Template.main.events({
-        "submit .new-todo": function(event) {
-            var text = event.target.text.value;
-            Meteor.call('addTodo', text);
-            //Clear Form
-            event.target.text.value='';
+  // Template Helpers
+  Template.main.helpers({
+    todos: function(){
+      return Todos.find({}, {sort: {createdAt: -1}});
+    }
+  });
 
-            //Prevent Submit
-            return false
-        },
+  Template.main.events({
+    "submit .new-todo": function(event){
+      var text = event.target.text.value;
 
-        "click .toggle-checked": function() {
-            Meteor.call('setChecked', this._id, !this.checked);
-        },
+      Meteor.call('addTodo', text);
 
-        "click .delete-todo": function() {
-            if(confirm("Are you sure?")) {
-                Meteor.call('deleteTodo', this._id);
-            }
-        }
-    });
+      // Clear Form
+      event.target.text.value='';
 
-    Accounts.ui.config({
-        passwordSignupFields: "USERNAME_ONLY"
-    });
+      // Prevent Submit
+      return false;
+    },
+    "click .toggle-checked": function(){
+      Meteor.call('setChecked', this._id, !this.checked);
+    },
+    "click .delete-todo": function(){
+      if(confirm('Are You Sure?')){
+        Meteor.call('deleteTodo', this._id);
+      }
+    }
+  });
+
+  Accounts.ui.config({
+    passwordSignupFields: "USERNAME_ONLY"
+  });
 }
 
-//Meteor Methods
-Meteor.methods({
-    addTodo: function(text) {
-        if(!Meteor.userID()) {
-            throw new Meteor.error('not-authorised');
-        }
-        Todos.insert({
-            text: text,
-            createdAt: new Date(),
-            userID: Meteor.userID,
-            username: Meteor.user().username
-        });
-    },
-
-    deleteTodo: function(todoId) {
-        Todos.remove(todoId);
-    },
-    setChecked: function(todoId, setChecked) {
-        Todos.update(todoId, {$set:{checked: setChecked}});
+if(Meteor.isServer){
+  Meteor.publish('todos', function(){
+    if(!this.userId){
+      return Todos.find();
+    } else {
+      return Todos.find({userId: this.userId});
     }
+  });
+}
+
+// Meteor Methods
+Meteor.methods({
+  addTodo: function(text){
+    if(!Meteor.userId()){
+      throw new Meteor.Error('not-authorized');
+    }
+    Todos.insert({
+        text: text,
+        createdAt: new Date(),
+        userId: Meteor.userId(),
+        username: Meteor.user().username
+      });
+  },
+  deleteTodo: function(todoId){
+    var todo = Todos.findOne(todoId);
+    if(todo.userId !== Meteor.userId()){
+      throw new Meteor.Error('not-authorized');
+    }
+    Todos.remove(todoId);
+  },
+  setChecked: function(todoId, setChecked){
+    var todo = Todos.findOne(todoId);
+    if(todo.userId!== Meteor.userId()){
+      throw new Meteor.Error('not-authorized');
+    }
+    Todos.update(todoId, {$set:{checked: setChecked}});
+  }
 });
