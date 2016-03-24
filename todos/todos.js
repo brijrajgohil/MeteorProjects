@@ -13,7 +13,9 @@ if (Meteor.isClient) {
             var text = event.target.text.value;
             Todos.insert({
                 text: text,
-                createdAt: new Date()
+                createdAt: new Date(),
+                userID: Meteor.userID,
+                username: Meteor.user().username
             });
 
             //Clear Form
@@ -32,5 +34,9 @@ if (Meteor.isClient) {
                 Todos.remove(this._id);
             }
         }
+    });
+
+    Accounts.ui.config({
+        passwordSignupFields: "USERNAME_ONLY"
     });
 }
