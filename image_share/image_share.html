@@ -9,5 +9,7 @@
 </body>
 
 <template name="images">
-  <img src="2.jpg" alt="my picture"/>
+    {{#each images}}
+    <img src="{{img_src}}" alt="{{img_alt}}"/>
+    {{/each}}
 </template>
