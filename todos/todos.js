@@ -11,7 +11,7 @@ if (Meteor.isClient) {
   });
 
   Template.main.events({
-    "submit .new-todo": function(evenx){
+    "submit .new-todo": function(event){
       var text = event.target.text.value;
 
       Meteor.call('addTodo', text);
