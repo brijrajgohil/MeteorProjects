@@ -7,6 +7,21 @@ if(Meteor.isServer) {
                     img_alt: "It's me haha"
                 }
             );
+
+            Images.insert(
+                {
+                    img_src: "2.jpg",
+                    img_alt: "Nature"
+                }
+            );
+
+            Images.insert(
+                {
+                    img_src: "3.jpg",
+                    img_alt: "Green"
+                }
+            );
+
         }
     });
 }
