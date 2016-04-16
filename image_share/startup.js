@@ -1,27 +1,16 @@
 if(Meteor.isServer) {
     Meteor.startup(function() {
         if(Images.find().count() == 0) {
-            Images.insert(
-                {
-                    img_src: "1.jpg",
-                    img_alt: "It's me haha"
-                }
-            );
 
-            Images.insert(
-                {
-                    img_src: "2.jpg",
-                    img_alt: "Nature"
-                }
-            );
-
-            Images.insert(
-                {
-                    img_src: "3.jpg",
-                    img_alt: "Green"
-                }
-            );
-
+            for(var i = 1; i < 23; i++) {
+                Images.insert(
+                    {
+                        img_src: "img_" + i +".jpg",
+                        img_alt: "Image number" + i
+                    }
+                );
+            }
+            console.log(Images.find().count());
         }
     });
 }
