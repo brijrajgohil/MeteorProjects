@@ -4,8 +4,10 @@
 
 <body>
     {{> image_add_form}}
-    <h1>Welcome to Coursera!</h1>
-    {{> images}}
+    <div class="container">
+        <h1>Welcome to Coursera!</h1>
+        {{> images}}
+    </div>
 </body>
 <template name="image_add_form">
     <div class="modal fade" id="image_add_form" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
