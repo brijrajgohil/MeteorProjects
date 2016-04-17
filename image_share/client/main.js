@@ -17,7 +17,8 @@ Accounts.ui.config({
     passwordSignupFields: "USERNAME_AND_EMAIL"
 });
 
-Template.images.helpers({images:
+Template.images.helpers(
+    {
     images: function() {
         if(Session.get("userFilter")){
             return Images.find({createdBy: Session.get("userFilter")}, {sort: {createdOn: -1, rating: -1}});

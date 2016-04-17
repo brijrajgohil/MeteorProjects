@@ -4,7 +4,9 @@
 
 
 <body>
-    {{> image_add_form}}
+    <div class="container">
+        {{> image_add_form}}
+    </div>
 
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
@@ -28,7 +30,7 @@
           </div>
           <div class="modal-body">
               <form class="js-add-image">
-                  <input type="text" name="img_src"></br>
+                  <input type="text" name="img_src"><br/>
                   <input type="text" name="img_alt">
                   <button class="btn btn-success">save</button>
               </form>
@@ -41,7 +43,7 @@
       </div>
     </div>
     <form class="js-add-image">
-        <input type="text" name="img_src"></br>
+        <input type="text" name="img_src"><br/>
         <input type="text" name="img_alt">
         <button class="btn btn-success">save</button>
     </form>
