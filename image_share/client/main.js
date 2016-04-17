@@ -1,3 +1,16 @@
+//Routing
+Router.route('/', function () {
+  this.render('navbar');
+});
+Router.route('/images', function () {
+  this.render('images');
+});
+
+
+
+
+//Scroll
+
 Session.set("imageLimit", 8);
 lastScrollTop = 0;
 $(window).scroll(function(event) {

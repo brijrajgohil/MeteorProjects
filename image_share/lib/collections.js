@@ -15,7 +15,7 @@ Images.allow({
         else {
             return false;
         }
-    }
+    },
     remove: function(userId, doc) {
         return true;
     }
