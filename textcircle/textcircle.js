@@ -5,12 +5,8 @@ if (Meteor.isClient) {
 
     Template.editor.helpers({
         docid: function() {
-            var doc = Documents.findOne();
-            if(doc) {
-                return doc._id;
-            } else {
-                return undefined;
-            }
+            setupCurrentDocument();
+            return Session.get("docid");
         },
 
         config: function() {
@@ -42,6 +38,48 @@ if (Meteor.isClient) {
             return users;
         }
     });
+
+    Template.navbar.helpers({
+        documents: function() {
+            return Documents.find();
+        }
+    });
+
+
+    /////////////
+    // EVENTS //
+    ////////////
+
+    Template.navbar.events({
+        "click .js-add-doc": function(event) {
+            event.preventDefault();
+            if(!Meteor.user()) {
+                alert("You need to login");
+            }
+            else {
+                var id = Meteor.call("addDoc", function(err, res) {
+                    if(!err) {
+                        Session.set("docid", res);
+                    }
+                });
+
+            }
+        },
+
+        "click .js-load.doc": function(event) {
+            Session.set("docid", this._id);
+        }
+    });
+
+    Template.docMeta.events({
+        "click .js-tog-private": function(event) {
+            var doc = {
+                _id: Session.get("docid"),
+                isPrivate: event.target.checked
+            };
+            Meteor.call("updateDocPrivacy", doc);
+        }
+    });
 }
 
 if (Meteor.isServer) {
@@ -55,6 +93,24 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
+
+    addDoc: function() {
+        var doc;
+        if(!this.userId) {// not logged in
+            return;
+        }
+        else {
+            doc = {
+                owner: this.userId,
+                createdOn: new Date(),
+                title: "My new Doc",
+
+            };
+            var id = Documents.insert(doc);
+            return id;
+        }
+    },
+
     addEditingUser: function() {
         var doc, user, eusers;
         doc = Documents.findOne();
@@ -75,6 +131,14 @@ Meteor.methods({
         user.lastEdit = new Date();
         eusers.users.[this.userId] = user;
         EditingUsers.upsert({_id: eusers._id}, eusers);
+    },
+
+    updateDocPrivacy: function(doc) {
+        var realDoc = Documents.findOne({_id: doc._id, owner: this.userId});
+        if(realDoc) {
+            realDoc.isPrivate = doc.isPrivate;
+            Documents.update({_id: doc._id}, realDoc);
+        }
     }
 });
 
@@ -85,4 +149,14 @@ function fixedObjectKeys(obj) {
         newObj[key2] = obj[key]
     }
     return newObj;
+}
+
+function setupCurrentDocument() {
+    var doc;
+    if(!Session.get("docid")) {
+        doc = Documents.findOne();
+        if(doc) {
+            Session.set("docid", doc._id);
+        }
+    }
 }
