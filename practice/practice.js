@@ -1,12 +1,20 @@
 this.Documents = new Mongo.Collection("documents");
 
-
-
 if (Meteor.isClient) {
-  // counter starts at 0
+
+  Meteor.setInterval(function() {
+      Session.set("current_date", new Date());
+  }, 1000);
+  
   Template.editor.helpers({
       docid: function() {
-          return Documents.findOne()._id;
+          var doc = Documents.findOne();
+          if(doc) {
+              return doc._id;
+          }
+          else {
+              return undefined;
+          }
       }
   });
 }
